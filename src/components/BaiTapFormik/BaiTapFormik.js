@@ -2,11 +2,12 @@ import { useFormik } from "formik";
 import React from "react";
 import * as Yup from "yup";
 import TableUser from "./TableUser";
-import { useDispatch } from "react-redux";
-import { getValueUser } from "../../redux/slice/userSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { getValueUser, updateUser } from "../../redux/slice/userSlice";
 
 const BaiTapFormik = () => {
   const dispatch = useDispatch();
+  const { showErr } = useSelector((state) => state.userSlice);
   const formik = useFormik({
     // initialValues sẽ là object lưu trữ giá trị người dung
     // lưu ý khi sử dụng formik các thẻ input đầu vào cần có các thuộct tính name trùng với id và gọi initialvalue từ trường name trong input
@@ -23,8 +24,10 @@ const BaiTapFormik = () => {
     onSubmit: (values, { resetForm }) => {
       // console.log(value);
       dispatch(getValueUser(values));
+
       resetForm();
     },
+
     validationSchema: Yup.object({
       // nơi chứa các thuộc tính inittailvalue
 
@@ -56,8 +59,16 @@ const BaiTapFormik = () => {
   // errors là các thông báo lỗi khi họ nhập dữ liệu
   // touched giúp kiểm tra người dùng có tương tác input hay chưa
   // values giúp lưu trữ liệu người dùng
-  const { handleChange, handleBlur, handleSubmit, values, touched, errors } =
-    formik;
+  const {
+    handleChange,
+    handleBlur,
+    handleSubmit,
+    values,
+    touched,
+    errors,
+    setValues,
+    resetForm,
+  } = formik;
   // console.log(errors)
   // console.log(touched);
   console.log("huhu");
@@ -215,17 +226,31 @@ const BaiTapFormik = () => {
                 )}
               </div>
             </div>
-            <button
-              className="bg-black py-2 px-4 rounded-md text-white mt-5"
-              type="submit"
-            >
-              Thêm người dùng
-            </button>
+            <div className="space-x-5 space-y-2">
+              <button
+                className="bg-black py-2 px-4 rounded-md text-white mt-5"
+                type="submit"
+              >
+                Thêm người dùng
+              </button>
+              <button
+                className="bg-orange-600 py-2 px-4 rounded-md text-white mt-5"
+                type="button"
+                onClick={() => {
+                  dispatch(updateUser(values));
+                  resetForm();
+                  document.getElementById("ID").disabled = false;
+                }}
+              >
+                Cập nhật người dùng
+              </button>
+              <p className="text-xs text-red-500">{showErr}</p>
+            </div>
           </form>
         </div>
       </div>
       <div className="contianer max-w-7xl mx-auto py-10">
-        {/* <TableUser /> */}
+        <TableUser setValues={setValues} />
       </div>
     </>
   );

@@ -1,16 +1,18 @@
 import React from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { removeUser } from "../../redux/slice/userSlice";
 
-const TableUser = () => {
+const TableUser = ({ setValues }) => {
   const { arrUser } = useSelector((state) => {
     console.log(state.userSlice);
     return state.userSlice;
   });
+  const dispatch = useDispatch();
   return (
     <>
       <div className="relative overflow-x-auto rounded-lg">
         <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-          <thead className="text-xs text-gray-700 uppercase bg-gray-50 ">
+          <thead className="text-xs text-gray-700 uppercase bg-gray-50">
             <tr>
               <th scope="col" className="px-6 py-3">
                 ID
@@ -26,6 +28,9 @@ const TableUser = () => {
               </th>
               <th scope="col" className="px-6 py-3">
                 Số điện thoại
+              </th>
+              <th scope="col" className="px-6 py-3">
+                Actions
               </th>
             </tr>
           </thead>
@@ -53,7 +58,25 @@ const TableUser = () => {
                 <td className="px-6 py-4">{item.email}</td>
                 <td className="px-6 py-4">{item.maLoaiNguoiDung}</td>
                 <td className="px-6 py-4">{item.soDienThoai}</td>
-                
+                <td className="px-6 py-4 space-x-3">
+                  <button
+                    className="p-3 text-white rounded-md bg-red-600"
+                    onClick={() => {
+                      dispatch(removeUser(item.ID));
+                    }}
+                  >
+                    Xoá
+                  </button>
+                  <button
+                    className="p-3 text-white rounded-md bg-yellow-600"
+                    onClick={() => {
+                      document.getElementById("ID").disabled = true;;
+                      setValues(item);
+                    }}
+                  >
+                    Sửa
+                  </button>
+                </td>
               </tr>
             ))}
           </tbody>
